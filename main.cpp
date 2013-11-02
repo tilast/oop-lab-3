@@ -5,21 +5,6 @@
 #include <ctime>
 #include <cstdlib>
 
-/*
-class ShallSort
-{
-public:
-        static const ShallSort& Instance()
-        {
-                static ShallSort theSingleInstance;
-                return theSingleInstance;
-        }
-private:        
-        ShallSort(){};
-        ShallSort(const ShallSort& root);
-        ShallSort& operator=(const ShallSort&);
-};*/
-
 class ShallSort
 {
 	static ShallSort* _self;
@@ -32,28 +17,60 @@ public:
 		return _self;
 	}
 
-	std::list< int > simpleSort(std::list< int > myList) {
+    void simpleSort(std::list< int >::iterator first, int size) {
+    	std::list< int >::iterator al = goTo(first, 3);
+		for(int d = size / 2; d != 0; d /= 2 ) {
+			std::cout << "deep 1" << std::endl;
+	    	for( std::list< int >::iterator i = goTo(first, d); i != goTo(first, size - 1); ++i ) {
+	    		std::cout << "deep 2" << std::endl;
+	    		std::list< int >::iterator j = i;
+	    		for(; findOffset(first, first, j)  >= d && (*j < *(goTo(j, -d))); j = goTo(j, -d) ) {
+	    			std::cout << "deep 3" << std::endl;
+	    			int a = *j;
+	    			*j = *(goTo(j, -d));
+	    			*(goTo(j, -d)) = a;
+	    			std::cout << "swap" << std::endl;
+	    		}
+	    	}
+	    }
+    }
+
+	std::list< int >::iterator goTo(std::list< int >::iterator start, int offset) {
 		
-	}
-
-	std::list< int > sedgwickSort(std::list< int > myList) {
-		incrementsArray(myList.size());
-	}
-
-	void incrementsArray(int size) {
-		increments.resize(size);
-
-		for(int i = 0; i < size; i++) {
-			increments[i] = (i % 2) ? odd(i) : even(i);
+		std::cout << "goto:" << std::endl;
+		clock_t progTime = clock();
+		if(offset > 0) {
+			for(int i = 0; i < offset; i++) {
+				start++;
+			}
+		} else {
+			for(int i = 0; i < -offset; i--) {
+				start--;
+			}
 		}
-	}
 
-	int even(int i) {
-		return 9 * pow(2.0, i) - 9 * pow(2.0, i / 2) + 1;
-	}
+		progTime = clock() - progTime;
+		std::cout << "Time: " <<(double)progTime / CLOCKS_PER_SEC << " seconds" << std::endl;
 
-	int odd(int i) {
-		return 8 * pow(2.0, i) - 6 * pow(2.0, (i + 1) / 2) + 1;
+		return start;
+	}    
+
+	int findOffset(std::list< int >::iterator first, std::list< int >::iterator start, std::list< int >::iterator end) {
+		std::cout << "findoffset:" << std::endl;
+		clock_t progTime = clock();
+		int startPos = 0, endPos = 0;
+
+		std::list<int>::iterator helper = first;
+
+		for(; helper != start; helper++, startPos++);
+		helper = first;
+		for(; helper != end; helper++, endPos++);
+
+		int result = endPos - startPos;
+		progTime = clock() - progTime;
+		std::cout << "Time: " <<(double)progTime / CLOCKS_PER_SEC << " seconds" << std::endl;
+
+		return (result > 0) ? result : -result;
 	}
 };
 
@@ -61,26 +78,20 @@ ShallSort* ShallSort ::_self=NULL;
 
 int main(int argc, char ** argv) {
 	srand(time(NULL));
-	std::list<int> a(1000);
-	std::list<int>::iterator it = a.begin;
-/*	a.push_back(3);
-	a.push_back(17);
+	std::list<int> a;
 	a.push_back(5);
-	a.push_back(16);
-	a.push_back(11);
-	a.push_back(-9);
-	std::list<int>::iterator it = a.begin();
-	it++;
-	it++;
-	it++;
-	std::cout << *it << std::endl;
-	std::cout << "sksjh" << std::endl;
-*/
-	// Sedgewick sort
-		/*for(int i = 0; i < 40000; i++) {
-			a.push_back(rand() % 75);
-		}*/
+	a.push_back(15);
+	a.push_back(-56);
+	a.push_back(54);
+	a.push_back(12);
+	a.push_back(34);
+	a.push_back(47);
+	a.push_back(0);
 
-	ShallSort::Instance()->sedgwickSort(a);
+	ShallSort::Instance()->simpleSort(a.begin(), a.size());
+
+	for(std::list<int>::iterator it = a.begin(); it != a.end(); it++) {
+		std::cout << *it << std::endl;
+	}
 	return 0;
 }
