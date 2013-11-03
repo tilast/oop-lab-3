@@ -7,17 +7,27 @@
 #include <sstream>
 #include <string>
 
+/**
+* @class ShallSort
+* @desc class implements singleton, so we can use one instance to sort much lists
+*/
 class ShallSort
 {
 	static ShallSort* _self;
 
-	std::list< int >::iterator goTo(std::list< int >::iterator start, int offset) {
-		if(offset > 0) {
-			for(int i = 0; i < offset; i++) {
+	/**
+	* goTo - method turns us on the required position and returns required pointer
+	* @param std::list< int >::iterator start
+	* @param int Distance
+	* @return pointer on required item of the list
+	*/
+	std::list< int >::iterator goTo(std::list< int >::iterator start, int Distance) {
+		if(Distance > 0) {
+			for(int i = 0; i < Distance; i++) {
 				start++;
 			}
 		} else {
-			for(int i = 0; i < -offset; i++) {
+			for(int i = 0; i < -Distance; i++) {
 				start--;
 			}
 		}
@@ -25,7 +35,14 @@ class ShallSort
 		return start;
 	}    
 
-	int findOffset(std::list< int >::iterator first, std::list< int >::iterator start, std::list< int >::iterator end) {
+	/**
+	* findDistance - method calculates distance between two items of the list
+	* @param std::list< int >::iterator first - pointer on the first item of the list
+	* @param std::list< int >::iterator start - pointer on the start position
+	* @param std::list< int >::iterator end - pointer on the end position
+	* @return int - distance
+	*/
+	int findDistance(std::list< int >::iterator first, std::list< int >::iterator start, std::list< int >::iterator end) {
 		int startPos = 0, endPos = 0;
 
 		std::list<int>::iterator helper = first;
@@ -41,18 +58,26 @@ class ShallSort
 protected:
 	ShallSort(){}
 public:
+	/**
+	* @return instance of the ShallSort class
+	*/
 	static ShallSort* Instance() {
 		if(!_self) _self = new ShallSort();
 		return _self;
 	}
 
+	/**
+	* simpleSort - method changes input list sorting it by Shell asc and shows time of sorting
+	* @param std::list< int >::iterator first - pointer on the first item of the list
+	* @param int size - size of the list
+	*/
     void simpleSort(std::list< int >::iterator first, int size) {
     	clock_t executeTime = clock();
 
     	std::list< int >::iterator al = goTo(first, 3);
 		for(int d = size / 2; d != 0; d /= 2 ) {
 	    	for( std::list< int >::iterator i = goTo(first, d); i != goTo(first, size); ++i ) {
-	    		for(std::list< int >::iterator j = i; findOffset(first, first, j)  >= d && (*j < *(goTo(j, -d))); j = goTo(j, -d) ) {
+	    		for(std::list< int >::iterator j = i; findDistance(first, first, j)  >= d && (*j < *(goTo(j, -d))); j = goTo(j, -d) ) {
 	    			std::swap(*j, *(goTo(j, -d)));
 	    		}
 
@@ -67,6 +92,10 @@ public:
 };
 
 ShallSort* ShallSort ::_self=NULL;
+
+/**
+* class Menu - singleton class, provides the I\O Interface
+*/
 
 class Menu {
 	static Menu *_self;
@@ -86,13 +115,13 @@ class Menu {
         return tmp;
     }
 
-    std::list< int >::iterator goTo(std::list< int >::iterator start, int offset) {
-		if(offset > 0) {
-			for(int i = 0; i < offset; i++) {
+    std::list< int >::iterator goTo(std::list< int >::iterator start, int Distance) {
+		if(Distance > 0) {
+			for(int i = 0; i < Distance; i++) {
 				start++;
 			}
 		} else {
-			for(int i = 0; i < -offset; i++) {
+			for(int i = 0; i < -Distance; i++) {
 				start--;
 			}
 		}
@@ -202,19 +231,8 @@ Menu* Menu ::_self=NULL;
 
 int main(int argc, char ** argv) {
 	srand(time(NULL));
-/*	std::list<int> a;
-	
-	for(int i = 0; i < 10000; i++) {
-		a.push_back(rand() % 75);
-	}
 
-	ShallSort::Instance()->simpleSort(a.begin(), a.size());
-*/
 	Menu::Instance();
-
-	// std::list<int> a;
-	// std::list<int>::iterator it;
-	// a.insert(it, 10);
 
 	return 0;
 }
