@@ -7,11 +7,10 @@
 Use **make**, than **make start**
 
 # Commands
-> **add item** - adds item into required position in the list\n
-> **remove item** - remove item from required position\n
-> **remove all** - drop list\n
-> **view** - shows list\n
-> **size** - shows the size of the list\n
-> **shellsort** - sorts the list by Shell Sort\n
-> **exit** - exit\n
-
+**add item** - adds item into required position in the list
+**remove item** - remove item from required position
+**remove all** - drop list
+**view** - shows list
+**size** - shows the size of the list
+**shellsort** - sorts the list by Shell Sort
+**exit** - exit
